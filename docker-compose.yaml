@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+  simple-api-1:
+    build:
+      context: ./simple-api
+      dockerfile: Dockerfile
+    ports: [ 3001:3001 ]
+    environment:
+      PORT: 3001
+      TEST_FLAG: NORMAL
+
+  simple-api-2:
+    build:
+      context: ./simple-api
+      dockerfile: Dockerfile
+    ports: [ 3002:3002 ]
+    environment:
+      PORT: 3002
+      TEST_FLAG: NORMAL
+
+  simple-api-3:
+    build:
+      context: ./simple-api
+      dockerfile: Dockerfile
+    ports: [ 3003:3003 ]
+    environment:
+      PORT: 3003
+      TEST_FLAG: NORMAL
