@@ -8,6 +8,18 @@ const port = process.env.PORT || 8080;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get(
+    '/healthcheck',
+    async (req, res) => {
+        const {
+            status,
+            data
+        } = await TestHelper.getResponse();
+
+        res.status(status).send(data);
+    }
+);
+
 app.post(
     '/',
     async (req, res) => {
@@ -17,7 +29,7 @@ app.post(
             status,
             data
         } = await TestHelper.getResponse(req.body);
-        
+
         res.status(status).send(data);
     }
 );
