@@ -15,4 +15,28 @@ export class Logger {
 
         return;
     }
+
+    /**
+     * Log if there is an warning on the server
+     * @returns {void}
+     */
+    public static warn = (message) => {
+        console.log({
+            message: `[Warn] ${message}`
+        });
+
+        return;
+    }
+
+    /**
+     * Log if there is an error on the server
+     * @returns {void}
+     */
+    public static error = (message) => {
+        console.log({
+            message: `[Error] ${message}`
+        });
+
+        return;
+    }
 }
