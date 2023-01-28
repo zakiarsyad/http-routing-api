@@ -1,5 +1,6 @@
 import express from 'express';
 import { Logger } from '../helper/logger';
+import { TestHelper } from '../helper/test_response';
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -11,8 +12,13 @@ app.post(
     '/',
     async (req, res) => {
         Logger.requestInfo();
+
+        const {
+            status,
+            data
+        } = await TestHelper.getResponse(req.body);
         
-        res.status(200).send(req.body);
+        res.status(status).send(data);
     }
 );
 
