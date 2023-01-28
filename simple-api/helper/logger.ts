@@ -1,8 +1,14 @@
+export enum LoggerLevel {
+    INFO = "INFO",
+    WARN = "WARN",
+    ERROR = "ERROR"
+}
+
 export class Logger {
     private static requestCounter: number = 0;
 
     /**
-     * Log the request coming to the server
+     * Log and count the request coming to the server
      * @returns {void}
      */
     public static requestInfo = () => {
@@ -17,24 +23,14 @@ export class Logger {
     }
 
     /**
-     * Log if there is an warning on the server
+     * Log an event based on the level
+     * @param level 
+     * @param message 
      * @returns {void}
      */
-    public static warn = (message) => {
+    public static log = (level: LoggerLevel, message: string) => {
         console.log({
-            message: `[Warn] ${message}`
-        });
-
-        return;
-    }
-
-    /**
-     * Log if there is an error on the server
-     * @returns {void}
-     */
-    public static error = (message) => {
-        console.log({
-            message: `[Error] ${message}`
+            message: `[${level}] ${message}`
         });
 
         return;

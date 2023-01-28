@@ -1,5 +1,5 @@
 import express from 'express';
-import { Logger } from '../helper/logger';
+import { Logger, LoggerLevel } from '../helper/logger';
 import { TestHelper } from '../helper/test_response';
 
 const app = express();
@@ -11,6 +11,8 @@ app.use(express.urlencoded({ extended: true }));
 app.get(
     '/healthcheck',
     async (req, res) => {
+        Logger.log(LoggerLevel.INFO, "Healthcheck")
+
         const {
             status,
             data

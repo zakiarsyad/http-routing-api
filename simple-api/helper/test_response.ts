@@ -1,4 +1,4 @@
-import { Logger } from "./logger";
+import { Logger, LoggerLevel } from "./logger";
 
 interface TestResponse {
     status: number
@@ -35,7 +35,7 @@ export class TestHelper {
         if (testFlag === TestFlag.SLOW) {
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
-                    Logger.warn("Server is currently processing response with high latency");
+                    Logger.log(LoggerLevel.WARN, "Server is currently processing response with high latency");
                     
                     resolve(response);
                 }, 5000);
@@ -45,7 +45,7 @@ export class TestHelper {
             response.status = 500;
             response.data = { error_code: "SERVER_ERROR" }
 
-            Logger.error("Server is currently not available to process request");
+            Logger.log(LoggerLevel.ERROR, "Server is currently not available to process request");
             
             return new Promise((resolve, reject) => {
                 resolve(response)
