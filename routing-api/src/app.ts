@@ -1,11 +1,17 @@
 import express from 'express';
 import axios from "axios"
+import { Server } from '../routing/server';
+import { RoundRobin } from '../routing/round_robin';
 
 const app = express();
 const port = process.env.PORT || 8080;
 const urls = process.env.URLS || "http://localhost:3001,http://localhost:3002,http://localhost:3003";
 
-const servers = urls.split(",")
+const servers = urls.split(",").map(url => {
+    return new Server(url);
+});
+
+const roundRobin = new RoundRobin(servers);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -15,11 +21,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
     '/',
     async (req, res) => {
+        const server = roundRobin.pick();
+
         try {
-            const response = await axios({
-                url: servers[0],
+            const response = await server.fire({
                 method: req.method,
-                data: req.body
+                url: server.url,
+                body: req.body,
             });
 
             res.status(response.status).send(response.data || {});
