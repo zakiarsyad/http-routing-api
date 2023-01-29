@@ -15,9 +15,7 @@ export class Logger {
         // add the counter for testing purpose
         this.requestCounter++;
 
-        console.log({
-            message: `[Info] Incoming request - processing ${this.requestCounter} requests`
-        });
+        console.log(`[INFO] Incoming request - processing ${this.requestCounter} requests`);
 
         return;
     }
@@ -29,9 +27,7 @@ export class Logger {
      * @returns {void}
      */
     public static log = (level: LoggerLevel, message: string) => {
-        console.log({
-            message: `[${level}] ${message}`
-        });
+        console.log(`[${level}] ${message}`);
 
         return;
     }
