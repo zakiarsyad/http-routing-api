@@ -1,3 +1,4 @@
+import { Logger, LoggerLevel } from "../helper/logger";
 import { Server } from "./server";
 
 export class RoundRobin {
@@ -11,12 +12,14 @@ export class RoundRobin {
         let a = this.getServer();
         let b = this.getServer(a.url);
 
-        console.log(`Load server ${a.url} = ${a.load}`);
-        console.log(`Load server ${b.url} = ${b.load}`);
-
         const result = a.load < b.load ? a : b;
 
-        console.log(`Request routed to ${result.url}`);
+        // Log where a request is routed to
+        Logger.log(LoggerLevel.INFO, "===============================");
+        Logger.log(LoggerLevel.INFO, `Load server ${a.url} = ${a.load}`);
+        Logger.log(LoggerLevel.INFO, `Load server ${b.url} = ${b.load}`);
+        Logger.log(LoggerLevel.INFO, `Request routed to ${result.url}`);
+        Logger.log(LoggerLevel.INFO, "===============================");
 
         return result;
     }

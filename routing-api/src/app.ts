@@ -2,6 +2,7 @@ import express from 'express';
 import axios from "axios"
 import { Server } from '../routing/server';
 import { RoundRobin } from '../routing/round_robin';
+import { Logger } from '../helper/logger';
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -21,6 +22,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
     '/',
     async (req, res) => {
+        Logger.requestInfo();
+        
         const server = roundRobin.pick();
 
         try {
