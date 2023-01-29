@@ -36,3 +36,9 @@ services:
     environment:
       PORT: 3000
       URLS: "http://simple-api-1:3001,http://simple-api-2:3002,http://simple-api-3:3003"
+      ROLLING_COUNT_TIMEOUT: 10000
+      ROLLING_COUNT_BUCKET: 10
+      ERROR_THRESHOLD_PERCENTAGE: 20
+      LATENCY_THRESHOLD_PERCENTAGE: 20
+      LATENCY_THRESHOLD: 3000
+      HEALTHCHECK_PERIOD: 5000
