@@ -31,12 +31,18 @@ export class RoundRobin {
     private getServer = (url?: string): Server => {
         let i = Math.trunc(Math.random() * this.servers.length);
 
+        let server = this.servers[i];
+        server.updateStats();
+
         // choose anothe server if the current server is not ready
         // or the same with previous server
-        while (!this.servers[i].isReady() || this.servers[i].url === url) {
+        while (!server.isReady() || server.url === url) {
             i = Math.trunc(Math.random() * this.servers.length);
+
+            server = this.servers[i];
+            server.updateStats();
         }
 
-        return this.servers[i];
+        return server;
     }
 }

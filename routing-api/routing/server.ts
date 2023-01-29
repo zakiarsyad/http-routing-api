@@ -1,4 +1,4 @@
-import axios from "axios"
+import axios from "axios";
 
 const rollingCountTimeout = Number(process.env.ROLLING_COUNT_TIMEOUT);
 const rollingCountBuckets = Number(process.env.ROLLING_COUNT_BUCKET);
@@ -94,6 +94,26 @@ export class Server {
     }
 
     /**
+     * Get the aggragate value of the buckets
+     * @returns {void}
+     */
+    public updateStats = (): void => {
+        const total = this.window.reduce((acc, val) => {
+            Object.keys(acc).forEach(key => {
+                (acc[key] += val[key] || 0);
+            });
+
+            return acc;
+        }, this.bucket());
+
+        this.load = total.fires;
+        this.errorRate = (total.fails / total.fires) * 100;
+        this.slowRate = (total.slows / total.fires) * 100;
+
+        return;
+    }
+
+    /**
      * Call the url destination and record the stat
      * @param options 
      * @returns {object}
@@ -147,43 +167,12 @@ export class Server {
     };
 
     /**
-     * Rotate and evaluate the bucket
+     * Rotate the bucket
      * @returns {void}
      */
     private rotate = (): void => {
-        this.getStats();
-        this.nextBucket();
-
-        return;
-    }
-
-    /**
-     * Create a new bucket and remove the earliest one
-     * @returns {void}
-     */
-    private nextBucket = (): void => {
         this.window.pop();
         this.window.unshift(this.bucket());
-
-        return;
-    };
-
-    /**
-     * Get the aggragate value of the buckets
-     * @returns {void}
-     */
-    private getStats = (): void => {
-        const total = this.window.reduce((acc, val) => {
-            Object.keys(acc).forEach(key => {
-                (acc[key] += val[key] || 0);
-            });
-
-            return acc
-        }, this.bucket());
-
-        this.load = total.fires;
-        this.errorRate = total.fails / total.fires;
-        this.slowRate = total.slows / total.fires;
 
         return;
     }
