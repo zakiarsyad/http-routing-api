@@ -1,12 +1,5 @@
 import axios from "axios";
 
-const rollingCountTimeout = Number(process.env.ROLLING_COUNT_TIMEOUT);
-const rollingCountBuckets = Number(process.env.ROLLING_COUNT_BUCKET);
-const errorThresholdPercentage = Number(process.env.ERROR_THRESHOLD_PERCENTAGE);
-const latencyThresholdPercentage = Number(process.env.LATENCY_THRESHOLD_PERCENTAGE);
-const latencyThreshold = Number(process.env.LATENCY_THRESHOLD);
-const healthcheckPeriode = Number(process.env.HEALTHCHECK_PERIOD);
-
 interface Bucket {
     fires: number
     fails: number
@@ -15,7 +8,7 @@ interface Bucket {
 
 interface FireRequest {
     url: string
-    method: string
+    method?: string
     body?: object
 }
 
@@ -24,7 +17,17 @@ interface FireResponse {
     data?: object
 }
 
-enum ResponseStatus {
+interface ServerOptions {
+    url: string
+    rollingCountTimeout: number
+    rollingCountBuckets: number
+    errorThresholdPercentage: number
+    latencyThresholdPercentage: number
+    latencyThreshold: number
+    healthcheckPeriode: number
+}
+
+export enum ResponseStatus {
     SUCCESS = "SUCCESS",
     FAIL = "FAIL"
 }
@@ -44,17 +47,18 @@ export class Server {
     private latencyThreshold: number;
     private healthcheckPeriode: number;
 
-    constructor(url: string) {
-        this.url = url;
+    constructor(options: ServerOptions) {
+        this.url = options.url;
+        this.timout = options.rollingCountTimeout || 10000;
+        this.buckets = options.rollingCountBuckets || 10;
+        this.errorThresholdPercentage = options.errorThresholdPercentage || 20;
+        this.latencyThresholdPercentage = options.latencyThresholdPercentage || 20;
+        this.latencyThreshold = options.latencyThreshold || 3000;
+        this.healthcheckPeriode = options.healthcheckPeriode || 5000;
+        
         this.load = 0;
         this.errorRate = 0;
         this.slowRate = 0;
-        this.timout = rollingCountTimeout || 10000;
-        this.buckets = rollingCountBuckets || 10;
-        this.errorThresholdPercentage = errorThresholdPercentage || 20;
-        this.latencyThresholdPercentage = latencyThresholdPercentage || 20;
-        this.latencyThreshold = latencyThreshold || 3000;
-        this.healthcheckPeriode = healthcheckPeriode || 5000;
 
         this.window = new Array();
         // prime the window with buckets
@@ -145,13 +149,8 @@ export class Server {
         } catch (err) {
             this.recordStats(ResponseStatus.FAIL);
 
-            return {
-                status: err.status || 500,
-                data: err.data || {}
-            }
+            return err;
         }
-
-
     }
 
     /**
