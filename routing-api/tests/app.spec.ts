@@ -1,9 +1,9 @@
-import supertest from "supertest";
+import axios from "axios";
+import MockAdapter from "axios-mock-adapter";
 import { expect } from "chai";
-import MockAdapter from 'axios-mock-adapter';
-import axios from 'axios';
+import supertest from "supertest";
 
-const app = require('../src/app');
+const app = require("../src/app");
 const request = supertest(app);
 
 describe("Test send request", () => {
@@ -20,7 +20,7 @@ describe("Test send request", () => {
             "points": 20
         };
 
-        const response = await request.post('/').send(body);
+        const response = await request.post("/").send(body);
 
         expect(response.status).to.equal(200);
         mock.reset();
@@ -37,7 +37,7 @@ describe("Test send request", () => {
             "points": 20
         };
 
-        const response = await request.post('/').send(body);
+        const response = await request.post("/").send(body);
 
         expect(response.status).to.equal(500);
     });

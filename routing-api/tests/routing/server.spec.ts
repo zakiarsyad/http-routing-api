@@ -1,8 +1,5 @@
-import { expect } from 'chai';
-import { ResponseStatus, Server } from '../../routing/server';
-import sinon from "sinon";
-import MockAdapter from 'axios-mock-adapter';
-import axios from 'axios';
+import { expect } from "chai";
+import { ResponseStatus, Server } from "../../routing/server";
 
 describe("Server class test", () => {
     const server = new Server({

@@ -26,8 +26,6 @@ export class Controller {
             data: body || {}
         };
 
-        Logger.log(LoggerLevel.INFO, this.status);
-
         if (this.status === ResponseStatus.ERROR) {
             response.status = 500;
             response.data = { message: "SERVER_ERROR" }
