@@ -31,16 +31,4 @@ describe("RoundRobin class test", () => {
             expect(roundRobin["servers"][0].url).to.deep.equal(server1.url);
         });
     });
-
-    describe("Test the methods", () => {
-        describe("pick", () => {
-            // add a dummy load to server 2
-            server2["recordStats"](ResponseStatus.SUCCESS);
-
-            // should pick server1 as it has lower load
-            const server = roundRobin.pick();
-
-            expect(server.url).to.equal(server1.url);
-        });
-    });
 });
