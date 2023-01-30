@@ -18,7 +18,7 @@ services:
     environment:
       PORT: 3002
       TEST_FLAG: SLOW
-      TEST_PERIOD: 20
+      TEST_SKIPPED: 20
 
   simple-api-3:
     build:

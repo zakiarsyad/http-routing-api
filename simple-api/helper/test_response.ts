@@ -5,55 +5,53 @@ interface TestResponse {
     data?: object
 }
 
-enum TestFlag {
+export enum TestFlag {
     NORMAL = "NORMAL",
     SLOW = "SLOW",
     ERROR = "ERROR",
 }
 
-const testFlag = process.env.TEST_FLAG || TestFlag.NORMAL;
-const testPeriod = process.env.TEST_PERIOD;
-
 export class TestHelper {
-    private static normalTestCount: number = Number(testPeriod) || 20;
+    private testFlag: TestFlag;
+    private testSkipped: number;
+
+    constructor(testFlag: TestFlag, testSkipped: number) {
+        this.testFlag = testFlag;
+        this.testSkipped = testSkipped;
+    }
 
     /**
      * Get dummy response based on a test flag
      * @returns {TestResponse}
      */
-    public static getResponse = async (body?: object): Promise<TestResponse> => {
+    public getResponse = async (body?: object): Promise<TestResponse> => {
         const response = {
             status: 200,
             data: body || {}
         };
 
-        if (this.normalTestCount > 0) {
-            this.normalTestCount--;
+        if (this.testSkipped > 0) {
+            this.testSkipped--;
             return response;
         }
 
-        if (testFlag === TestFlag.SLOW) {
-            return new Promise((resolve, reject) => {
+        if (this.testFlag === TestFlag.SLOW) {
+            return new Promise((resolve) => {
                 setTimeout(() => {
                     Logger.log(LoggerLevel.WARN, "Server is currently processing response with high latency");
-                    
+
                     resolve(response);
                 }, 5000);
             });
-
-        } else if (testFlag === TestFlag.ERROR) {
+        } else if (this.testFlag === TestFlag.ERROR) {
             response.status = 500;
             response.data = { error_code: "SERVER_ERROR" }
 
             Logger.log(LoggerLevel.ERROR, "Server is currently not available to process request");
-            
-            return new Promise((resolve, reject) => {
-                resolve(response)
-            });
+
+            return response;
         } else {
-            return new Promise((resolve, reject) => {
-                resolve(response)
-            });
+            return response;
         }
     }
 }

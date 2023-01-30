@@ -1,12 +1,19 @@
 import express from 'express';
 import { Logger, LoggerLevel } from '../helper/logger';
-import { TestHelper } from '../helper/test_response';
+import { TestFlag, TestHelper } from '../helper/test_response';
+
+const port = process.env.PORT || 8080;
+const testFlag = process.env.TEST_FLAG || TestFlag.NORMAL;
+const testSkipped = Number(process.env.TEST_SKIPPED) || 10;
 
 const app = express();
-const port = process.env.PORT || 8080;
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+const testHelper = new TestHelper(
+    testFlag as TestFlag,
+    testSkipped
+);
 
 app.get(
     '/healthcheck',
@@ -16,7 +23,7 @@ app.get(
         const {
             status,
             data
-        } = await TestHelper.getResponse();
+        } = await testHelper.getResponse();
 
         res.status(status).send(data);
     }
@@ -30,7 +37,7 @@ app.post(
         const {
             status,
             data
-        } = await TestHelper.getResponse(req.body);
+        } = await testHelper.getResponse(req.body);
 
         res.status(status).send(data);
     }
@@ -39,3 +46,5 @@ app.post(
 app.listen(port, () => {
     return console.log(`Express is listening at http://localhost:${port}`);
 });
+
+module.exports = app
