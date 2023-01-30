@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/src/app.js"
+    "start": "node dist/src/app.js",
+    "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' nyc mocha --exit -t 6000 -r ts-node/register 'tests/**/*.ts'"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +16,15 @@
     "typescript": "^4.9.4"
   },
   "devDependencies": {
-    "@types/node": "^18.11.18"
+    "@types/chai": "^4.3.4",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.11.18",
+    "@types/sinon": "^10.0.13",
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0",
+    "nyc": "^15.1.0",
+    "sinon": "^15.0.1",
+    "supertest": "^6.3.3",
+    "ts-node": "^10.9.1"
   }
 }
