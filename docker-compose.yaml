@@ -8,7 +8,6 @@ services:
     ports: [ 3001:3001 ]
     environment:
       PORT: 3001
-      TEST_FLAG: NORMAL
 
   simple-api-2:
     build:
@@ -17,7 +16,6 @@ services:
     ports: [ 3002:3002 ]
     environment:
       PORT: 3002
-      TEST_FLAG: NORMAL
 
   simple-api-3:
     build:
@@ -26,7 +24,6 @@ services:
     ports: [ 3003:3003 ]
     environment:
       PORT: 3003
-      TEST_FLAG: NORMAL
 
   routing-api:
     build:
@@ -38,7 +35,7 @@ services:
       URLS: "http://simple-api-1:3001,http://simple-api-2:3002,http://simple-api-3:3003"
       ROLLING_COUNT_TIMEOUT: 10000
       ROLLING_COUNT_BUCKET: 10
-      ERROR_THRESHOLD_PERCENTAGE: 20
-      LATENCY_THRESHOLD_PERCENTAGE: 20
+      ERROR_THRESHOLD_PERCENTAGE: 10
+      LATENCY_THRESHOLD_PERCENTAGE: 10
       LATENCY_THRESHOLD: 3000
       HEALTHCHECK_PERIOD: 5000
