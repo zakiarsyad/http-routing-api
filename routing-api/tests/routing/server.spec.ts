@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { ResponseStatus, Server } from "../../routing/server";
+import { ResponseStatus, Server } from "../../src/routing/server";
 
 describe("Server class test", () => {
     const server = new Server({
@@ -13,7 +13,7 @@ describe("Server class test", () => {
     });
 
     describe("Test the initital value of the attributes", () => {
-        it("Should return the default value", () => {
+        it("Should return the provided value", () => {
             expect(server.url).to.equal("http://localhost:3001");
             expect(server.load).to.equal(0);
             expect(server.errorRate).to.equal(0);
@@ -25,6 +25,30 @@ describe("Server class test", () => {
             expect(server["latencyThresholdPercentage"]).to.equal(20);
             expect(server["latencyThreshold"]).to.equal(3000);
             expect(server["healthcheckPeriode"]).to.equal(5000);
+        });
+
+        it("Should return the default value of no value is provided", () => {
+            const defaultServer = new Server({
+                url: "http://localhost:3001",
+                rollingCountTimeout: undefined,
+                rollingCountBuckets: undefined,
+                errorThresholdPercentage: undefined,
+                latencyThresholdPercentage: undefined,
+                latencyThreshold: undefined,
+                healthcheckPeriode: undefined,
+            });
+
+            expect(defaultServer.url).to.equal("http://localhost:3001");
+            expect(defaultServer.load).to.equal(0);
+            expect(defaultServer.errorRate).to.equal(0);
+            expect(defaultServer.slowRate).to.equal(0);
+            expect(defaultServer["timout"]).to.equal(10000);
+            expect(defaultServer["buckets"]).to.equal(10);
+            expect(defaultServer["window"]).length(10);
+            expect(defaultServer["errorThresholdPercentage"]).to.equal(20);
+            expect(defaultServer["latencyThresholdPercentage"]).to.equal(20);
+            expect(defaultServer["latencyThreshold"]).to.equal(3000);
+            expect(defaultServer["healthcheckPeriode"]).to.equal(5000);
         });
     });
 

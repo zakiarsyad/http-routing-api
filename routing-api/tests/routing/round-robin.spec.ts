@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import { RoundRobin } from "../../routing/round_robin";
-import { Server } from "../../routing/server";
+import { RoundRobin } from "../../src/routing/round-robin";
+import { Server } from "../../src/routing/server";
 
 describe("RoundRobin class test", () => {
     const server1 = new Server({
