@@ -19,12 +19,12 @@ interface FireResponse {
 
 interface ServerOptions {
     url: string
-    rollingCountTimeout: number
-    rollingCountBuckets: number
-    errorThresholdPercentage: number
-    latencyThresholdPercentage: number
-    latencyThreshold: number
-    healthcheckPeriode: number
+    rollingCountTimeout: number | undefined
+    rollingCountBuckets: number | undefined
+    errorThresholdPercentage: number | undefined
+    latencyThresholdPercentage: number | undefined
+    latencyThreshold: number | undefined
+    healthcheckPeriode: number | undefined
 }
 
 export enum ResponseStatus {
@@ -55,7 +55,7 @@ export class Server {
         this.latencyThresholdPercentage = options.latencyThresholdPercentage || 20;
         this.latencyThreshold = options.latencyThreshold || 3000;
         this.healthcheckPeriode = options.healthcheckPeriode || 5000;
-        
+
         this.load = 0;
         this.errorRate = 0;
         this.slowRate = 0;
@@ -93,7 +93,6 @@ export class Server {
         if (this.errorRate > this.errorThresholdPercentage || this.slowRate > this.latencyThresholdPercentage) {
             return false;
         }
-
         return true;
     }
 
@@ -111,8 +110,8 @@ export class Server {
         }, this.bucket());
 
         this.load = total.fires;
-        this.errorRate = (total.fails / total.fires) * 100;
-        this.slowRate = (total.slows / total.fires) * 100;
+        this.errorRate = total.fails ? (total.fails / total.fires) * 100 : 0;
+        this.slowRate = total.slows ? (total.slows / total.fires) * 100 : 0;
 
         return;
     }
@@ -144,13 +143,22 @@ export class Server {
 
             return {
                 status: response.status,
-                data: response.data || {}
+                data: response.data,
             }
         } catch (err) {
             this.recordStats(ResponseStatus.FAIL);
 
             return err;
         }
+    }
+
+    /**
+     * Clear the server activities
+     * @returns {void}
+     */
+    public clear = (): void => {
+        clearInterval(this.bucketInterval);
+        clearInterval(this.healthcheckInterval);
     }
 
     /**
