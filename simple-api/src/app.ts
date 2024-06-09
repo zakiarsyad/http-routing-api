@@ -25,7 +25,7 @@ app.get(
 );
 
 app.post(
-    "/",
+    "/transactions",
     async (req, res) => {
         Logger.requestInfo();
 

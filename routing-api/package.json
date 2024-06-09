@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/src/app.js",
+    "start": "node dist/src/server.js",
     "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' nyc mocha --exit -t 6000 -r ts-node/register 'tests/**/*.ts'"
   },
   "keywords": [],
