@@ -1,5 +1,5 @@
-# HTTP-Round-Robin-API
-These project is to simulate on how a server can distribute the requests to destionation servers using roung-robin algorithm, by pick 2 random destionation servers and choose a server who has a lower load.
+# Routing API
+These project is to simulate on how a server can distribute the requests to destionation servers using round-robin algorithm, by pick 2 random destionation servers and choose a server who has a lower load.
 There are 2 kind of servers:
 - Routing API. The one who distributes the requests to destination servers
 - Simple API. The destination server
@@ -45,7 +45,47 @@ This service is only a simple API which has these endpoints
 - `POST /activate` to set the server status to be `NORMAL`
 - `POST /deactive` to set the server status to be `ERROR` or `SLOW` for testing purposes, so we can simulate a case when the destination server is down / slow
 
-## Test
+## Simulate the traffic distribution
+Once the necessary servers are running, we can simulate these scenarios by using Postman (or any similar app) to trigger multiple requests (in this example let's use 100 request).
+```
+curl --location --request POST 'http://localhost:3000/transactions' \
+--data ''
+```
+
+### If all Simple API servers are running
+If all the Simple API servers are running okay, all request will be distributed almost evenly to each server.
+
+### If one of the Simple API servers are returning error
+We can simulate an error from one server, by calling this endpoint:
+```
+curl --location 'http://localhost:3001/deactivate' \
+--header 'Content-Type: application/json' \
+--data '{
+    "status": "ERROR"
+}'
+```
+It will make one of the Simple API servers returning an error. Then the current traffic will only be distributed to the remaining health servers.
+The traffic will be routed back to this server once we evaluate if the error is not occured anymore, using `GET /healthcheck` call.
+
+We also can trigger it manually to make it healthy, bu calling this endpoint:
+```
+curl --location --request POST 'http://localhost:3001/activate'
+```
+
+### If one of the Simple API servers are slowing down
+We can simulate a case where a server going slow, by calling this endpoint:
+```
+curl --location 'http://localhost:3001/deactivate' \
+--header 'Content-Type: application/json' \
+--data '{
+    "status": "SLOW"
+}'
+```
+
+It will make one of the Simple API servers processing request with a 5 seconds time gap, to simulate a latency. Then the current traffic will only be distributed to the remaining health servers.
+The traffic will be routed back to this server once we evaluate if the error is not occured anymore, using `GET /healthcheck` call.
+
+## Unit Test
 In term of running the test we need to do these
 - Routing API
 ```
